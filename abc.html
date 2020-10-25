@@ -1,0 +1,48 @@
+<!DOCTYPE html><html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+<script>
+$( document ).ready(function(){
+
+
+ 
+
+ 
+ $( "#mylabel" ).click(function() {
+	
+	 var username=$("#user").val();
+	 var password=$("#password").val();
+	 var repassword=$("#repassword").val();
+	 
+	 if (username == "" || password ==""){
+			alert("Please input username");
+	 }else if (password == repassword){
+	 
+		alert("OK");
+	 
+	 }else{
+	 
+	  alert("please input the same password");
+	 
+	 }
+ 
+ 
+ });
+
+});
+</script>
+
+<body>
+
+Username<input type="text" id="user" value="999"><br>
+password<input type="password" id="password" value="abc"><br>
+REpassword<input type="password" id="repassword" value="abc"><br>
+
+<label id="mylabel">Click Me</label>
+
+<button id="btn">Press me</button>
+
+<a href="/form">click here</a>
+
+</body>

@@ -1,0 +1,128 @@
+<script>
+$( document ).ready(function(){
+
+
+ 
+ $( "#sendMessageButton" ).click(function() {
+	
+	 var email=$("#signin-email").val();
+	 var pass=$("#signin-password").val(); 
+	 
+	 if(email=="" || pass==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"email":email,"pass":pass};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Login", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+          //  alert(JSON.stringify(response));
+         //   alert(response.result);
+        
+        //  response= {["user":"alex","link":"http://www.jpg"],["alex":"http://ddddd"]}
+        
+          var r=JSON.stringify(response);
+				alert(r);
+          
+				
+                if(r=="0"){
+				alert("D");
+                    window.location="/nonmember";
+                }else{
+                
+					localStorage.setItem("myuser",email);
+                    window.location="/member";
+					a=response[0]['user'];
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	
+ 
+ });
+ 
+  $( "#createacc" ).click(function() {
+	
+	 var name=$("#signup-username").val();
+	 var remail=$("#signup-email").val();
+	 var pw2=$("#signup-password").val();
+	
+	 
+	 
+	 if (name == "" ||remail == "" || pw2 =="" ){
+			alert("Please fill all blank");
+	 }else {
+		alert("Login sucessful");
+		alert(name+"\n"+remail +"\n"+ pw2);
+	
+	 }
+	 
+	 if(name=="" || remail=="" || pw2==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"user":name,"email":remail,"pass":pw2};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Registration", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+            alert(JSON.stringify(response));
+            alert(response.result);
+
+                if(response=="success"){
+                    window.location="/member";
+                }else{
+                
+                    window.location="/nonmember";
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	 
+ 
+ });
+ 
+ 
+
+});
+</script>
+<!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 cd-main-nav js-main-nav" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="#page-top">Battery Everywhere</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto my-2 my-lg-0 cd-main-nav__list js-signin-modal-trigger">
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/index">About</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/product">Product</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
+						<li><a class="cd-main-nav__item cd-main-nav__item--signin" href="#0" data-signin="login">Sign in</a></li>
+						<li><a class="cd-main-nav__item cd-main-nav__item--signup" href="#0" data-signin="signup">Sign up</a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/member"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>

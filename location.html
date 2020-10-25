@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Battery Everywhere</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <!-- Third party plugin CSS-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/reset.css" rel="stylesheet" />
+		<link href="css/demo.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+		<script>
+$( document ).ready(function(){
+
+
+
+//login &logout
+  var a = document.getElementById("signin");
+  var b = document.getElementById("signup");
+  var c = document.getElementById("signout");
+  var fav = document.getElementById("fav");
+  var icon = document.getElementById("icon");
+  var email = localStorage.getItem("myuser");
+
+  
+ if (localStorage.getItem("myuser") === null) {
+	a.style.display = "block";
+	b.style.display = "block";
+	c.style.display = "none";
+	fav.style.display = "none";
+	icon.style.display = "none";
+	
+    
+  } else {
+    a.style.display = "none";
+	b.style.display = "none";
+	c.style.display = "block";
+	fav.style.display = "block";
+	icon.style.display = "block";
+	
+  }
+
+	$( "#signout" ).click(function() {
+	alert("Logout");
+	window.localStorage.clear();
+	location.reload();
+	
+
+	});
+
+
+
+  $.get("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en", 
+  
+  function(data, status){
+
+	var abc = JSON.stringify(data);
+	var myObj = JSON.parse(abc);
+	$("#weather").empty(); 
+	$("#weather").append("<h2>Today Temperature:"+myObj.temperature.data[0].value+" c </h2>");
+
+  });
+
+
+//get location
+	var x = document.getElementById("location");
+	if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+  
+	  function showPosition(position) {
+	  x.innerHTML = "Latitude: " + position.coords.latitude + 
+	  "<br>Longitude: " + position.coords.longitude;
+	  
+	  var lat1 = position.coords.latitude;
+	  var lon1 =  position.coords.longitude;
+	  
+	  return initMap(lat1,lon1);
+		}
+
+ 
+
+  //login
+ $( "#sendMessageButton" ).click(function() {
+	
+	 var email=$("#signin-email").val();
+	 var pass=$("#signin-password").val(); 
+	 
+	 if(email=="" || pass==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"email":email,"password":pass};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Login", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+          //  alert(JSON.stringify(response));
+         //   alert(response.result);
+        
+        //  response= {["user":"alex","link":"http://www.jpg"],["alex":"http://ddddd"]}
+        
+          var r=JSON.stringify(response);
+				alert(r);
+          
+				
+                if(r=="0"){
+				alert("D");
+         
+                }else{
+                
+					localStorage.setItem("myuser",email);
+                    location.reload();
+					a=response[0]['user'];
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	
+ 
+ });
+ 
+ 
+//Registration
+  $( "#createacc" ).click(function() {
+	
+	 var name=$("#signup-username").val();
+	 var remail=$("#signup-email").val();
+	 var pw2=$("#signup-password").val();
+	
+	 
+	 
+	 if (name == "" ||remail == "" || pw2 =="" ){
+			alert("Please fill all blank");
+	 }else {
+		//alert("Login sucessful");
+		//alert(name+"\n"+remail +"\n"+ pw2);
+		
+	 }
+	 
+	 if(name=="" || remail=="" || pw2==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"user":name,"email":remail,"password":pw2};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Registration", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+            //alert(JSON.stringify(response));
+           // alert(response.result);
+
+                if(response.result=="success"){
+                   // alert("success");
+					//alert(remail);
+					localStorage.setItem("myuser",remail);
+                    location.reload();
+					a=response[0]['user'];
+	
+                }else{
+					alert("not success");
+					location.reload();
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	 
+ 
+ });
+ 
+ 
+ //add favourite list
+   $( "#addcart" ).click(function() {
+	
+	 var name=$("#name").val();
+	 var item=$("#item").val();
+	 var price=$("#price").val();
+	 var price=$("#desc").val();
+	
+	 
+	 
+	 
+			//alert(price);
+	 
+     
+            
+            
+	 
+ 
+ });
+ 
+   $('body').on('click', ".mybtn",function(){
+		//alert($(this).parent().attr('id').html);
+		
+		var item = $(this).closest('.card').find(".item1").text();
+		alert(item);
+	
+		var price=$(this).closest('.card').find(".item2").text();
+		alert(price);
+
+		var  myuser =localStorage.getItem("myuser");
+		alert(myuser);
+		
+		var url = $(this).closest('.card').find('img.immg').attr('src');      
+        alert(url);
+		
+		var desc = $(this).closest('.card').find('.desc').text();      
+        alert(desc);
+		
+		
+        var mydata={"user":myuser,"item":item,"price":price,"img":url,"desc":desc};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/addproduct", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+            alert(JSON.stringify(response));
+            alert(response.result);
+
+                if(response=="success"){
+				alert("item add sucessful");
+        
+                }else{
+				alert("item add not sucessful");
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+
+});
+ 
+ 
+
+});
+</script>
+    </head>
+	
+	<style>
+      #map {
+        height: 600px;
+        width: 100%;
+      } 
+ </style>
+  <body id="page-top">
+	<header class="cd-main-header">
+		<div class="cd-main-header__logo"><a href="/index"><img src="img/logo001.png" alt="Logo"></a></div>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 cd-main-nav js-main-nav" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="#page-top">Battery Everywhere</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto my-2 my-lg-0 cd-main-nav__list js-signin-modal-trigger">
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/index">About</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/product">Product</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/index#contact">Contact</a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/cart" id="fav"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/member" id="icon"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+						<li id="signin"><a class="cd-main-nav__item cd-main-nav__item--signin" href="#0" data-signin="login" >Sign in</a></li>
+						<li id="signup"><a class="cd-main-nav__item cd-main-nav__item--signup" href="#0" data-signin="signup" >Sign up</a></li>
+						<li id="signout"><a class="cd-main-nav__item cd-main-nav__item--signin" href="#0" data-signin="login" >Sign out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		</header>
+		<!--End Navigation-->
+		
+		<div class="cd-signin-modal js-signin-modal"> <!-- this is the entire modal form, including the background -->
+		<div class="cd-signin-modal__container"> <!-- this is the container wrapper -->
+			<ul class="cd-signin-modal__switcher js-signin-modal-switcher js-signin-modal-trigger">
+				<li><a href="#0" data-signin="login" data-type="login">Sign in</a></li>
+				<li><a href="#0" data-signin="signup" data-type="signup">New account</a></li>
+			</ul>
+
+			<div class="cd-signin-modal__block js-signin-modal-block" data-type="login"> <!-- log in form -->
+				<form class="cd-signin-modal__form">
+					<p class="cd-signin-modal__fieldset">
+						<label class="cd-signin-modal__label cd-signin-modal__label--email cd-signin-modal__label--image-replace" for="signin-email">E-mail</label>
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signin-email" type="email" placeholder="E-mail">
+						<span class="cd-signin-modal__error">Error message here!</span>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signin-password">Password</label>
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signin-password" type="text"  placeholder="Password">
+						<a href="#0" class="cd-signin-modal__hide-password js-hide-password">Hide</a>
+						<span class="cd-signin-modal__error">Error message here!</span>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<input type="checkbox" id="remember-me" checked class="cd-signin-modal__input ">
+						<label for="remember-me">Remember me</label>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width" id="sendMessageButton" type="submit" value="Login">
+					</p>
+				</form>
+				
+				<p class="cd-signin-modal__bottom-message js-signin-modal-trigger"><a href="#0" data-signin="reset">Forgot your password?</a></p>
+			</div> <!-- cd-signin-modal__block -->
+
+			<div class="cd-signin-modal__block js-signin-modal-block" data-type="signup"> <!-- sign up form -->
+				<form class="cd-signin-modal__form">
+					<p class="cd-signin-modal__fieldset">
+						<label class="cd-signin-modal__label cd-signin-modal__label--username cd-signin-modal__label--image-replace" for="signup-username">Username</label>
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signup-username" type="text" placeholder="Username">
+						<span class="cd-signin-modal__error">Error message here!</span>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<label class="cd-signin-modal__label cd-signin-modal__label--email cd-signin-modal__label--image-replace" for="signup-email">E-mail</label>
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signup-email" type="email" placeholder="E-mail">
+						<span class="cd-signin-modal__error">Error message here!</span>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<label class="cd-signin-modal__label cd-signin-modal__label--password cd-signin-modal__label--image-replace" for="signup-password">Password</label>
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="signup-password" type="text"  placeholder="Password">
+						<a href="#0" class="cd-signin-modal__hide-password js-hide-password">Hide</a>
+						<span class="cd-signin-modal__error">Error message here!</span>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<input type="checkbox" id="accept-terms" class="cd-signin-modal__input ">
+						<label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" id="createacc" type="submit" value="Create account">
+					</p>
+				</form>
+			</div> <!-- cd-signin-modal__block -->
+
+			<div class="cd-signin-modal__block js-signin-modal-block" data-type="reset"> <!-- reset password form -->
+				<p class="cd-signin-modal__message">Lost your password? Please enter your email address. You will receive a link to create a new password.</p>
+
+				<form class="cd-signin-modal__form">
+					<p class="cd-signin-modal__fieldset">
+						<label class="cd-signin-modal__label cd-signin-modal__label--email cd-signin-modal__label--image-replace" for="reset-email">E-mail</label>
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border" id="reset-email" type="email" placeholder="E-mail">
+						<span class="cd-signin-modal__error">Error message here!</span>
+					</p>
+
+					<p class="cd-signin-modal__fieldset">
+						<input class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding" type="submit" value="Reset password">
+					</p>
+				</form>
+
+				<p class="cd-signin-modal__bottom-message js-signin-modal-trigger"><a href="#0" data-signin="login">Back to log-in</a></p>
+			</div> <!-- cd-signin-modal__block -->
+			<a href="#0" class="cd-signin-modal__close js-close">Close</a>
+		</div> <!-- cd-signin-modal__container -->
+	</div> <!-- cd-signin-modal -->
+		
+		
+		<!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-lg-3">
+
+        <h1 class="my-4">SORT BY</h1>
+        <div class="list-group">
+          <a href="#" class="list-group-item">ITEMS</a>
+          <a href="/location" class="list-group-item">LOCATIONS</a>
+          <a href="#" class="list-group-item">BATTERY</a>
+        </div>
+
+      </div>
+      <!-- /.col-lg-3 -->
+
+      <div class="col-lg-9">
+		<div class="col">
+		<div class="alert alert-success" role="alert">
+			<h2 id="weather">waeather</h2>
+		</div>
+		<div class="alert alert-success" role="alert">
+		  <h4 class="alert-heading">Your Location</h4>
+		  <hr>
+		  <p id="location"></p>		  
+		</div>	
+			
+			<div id="map" class="embed-responsive embed-responsive-16by9"></div>
+		</div>
+	</div>
+	</div>
+        
+        <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+
+
+
+
+
+        <!-- Footer-->
+        <footer class="bg-light py-5">
+            <div class="container"><div class="small text-center text-muted">Copyright © 2020 - Start Bootstrap</div></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/placeholders.min.js"></script>
+    </body>
+	<script>
+      var map;
+var markers = [];
+var position = [
+  {label:'A',lat:22.3105915,lng:114.22636},
+  {label:'B',lat:22.3110604,lng:114.22750},
+  {label:'C',lat:22.3109554,lng:114.22796},
+  {label:'D',lat:22.3113704,lng:114.22690},
+  {label:'E',lat:22.3112515,lng:114.22716}
+];
+
+function initMap(lat1,lon1) {
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 19,
+    center: {
+      lat: lat1,
+      lng: lon1,
+    }
+  });
+
+  for (var i = 0; i < position.length; i++) {
+    addMarker(i);
+  }
+}
+
+function addMarker(e) {
+  markers[e] = new google.maps.Marker({
+    position: {
+      lat: position[e].lat,
+      lng: position[e].lng
+    },
+    map: map,
+    label: position[e].label
+  });
+}	
+    </script>
+   
+	<script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASZ_Ljs12yZn8jVTLzb1brXgY1gbPlqm0&region=JP&language=cn&callback=initMap">
+</script>
+</html>

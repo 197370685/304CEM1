@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Creative - Start Bootstrap Theme</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <!-- Third party plugin CSS-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/reset.css" rel="stylesheet" />
+		<link href="css/demo.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+		
+		<style>
+		
+		.container {
+		  max-width: 960px;
+		}
+
+		.border-top { border-top: 1px solid #e5e5e5; }
+		.border-bottom { border-bottom: 1px solid #e5e5e5; }
+		.border-top-gray { border-top-color: #adb5bd; }
+
+		.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+		.lh-condensed { line-height: 1.25; }
+		
+		
+		</style>
+		
+		
+		<script>
+$( document ).ready(function(){
+
+
+
+//login &logout
+  var a = document.getElementById("signin");
+  var b = document.getElementById("signup");
+  var c = document.getElementById("signout");
+  var fav = document.getElementById("fav");
+  var icon = document.getElementById("icon");
+  var email = localStorage.getItem("myuser");
+
+  
+ if (localStorage.getItem("myuser") === null) {
+	a.style.display = "block";
+	b.style.display = "block";
+	c.style.display = "none";
+	fav.style.display = "none";
+	icon.style.display = "none";
+	
+    
+  } else {
+    a.style.display = "none";
+	b.style.display = "none";
+	c.style.display = "block";
+	fav.style.display = "block";
+	icon.style.display = "block";
+	
+  }
+
+	$( "#signout" ).click(function() {
+	alert("Logout");
+	window.localStorage.clear();
+	location.reload();
+	
+
+	});
+
+
+
+//update password
+	$( "#updatepw" ).click(function() {
+	
+	 var email = localStorage.getItem("myuser");
+	 alert(email);
+	 var pw1=$("#pw1").val(); 
+	 var pw2=$("#pw2").val(); 
+	// alert(pw1);
+	// alert(pw2);
+	 
+	 
+	 if(pw1=="" || pw2==""){
+           alert("Please enter password");
+           return;
+      }else if(pw1 !== pw2){
+	  alert("Please enter correct password");
+           return;
+	  
+	  
+	  }
+            
+     
+            
+            var mydata={"email":email,"password":pw1};
+			 $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/updatepw", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+            alert(JSON.stringify(response));
+           // alert(response.result);
+
+                if(response=="password updated"){
+				alert("password update");
+                    window.location="/member";
+                }else{
+                
+                    window.location="/member";
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	 
+      
+	
+ 
+ });
+
+  //login
+ $( "#sendMessageButton" ).click(function() {
+	
+	 var email=$("#signin-email").val();
+	 var pass=$("#signin-password").val(); 
+	 
+	 if(email=="" || pass==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"email":email,"password":pass};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Login", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+          //  alert(JSON.stringify(response));
+         //   alert(response.result);
+        
+        //  response= {["user":"alex","link":"http://www.jpg"],["alex":"http://ddddd"]}
+        
+          var r=JSON.stringify(response);
+				alert(r);
+          
+				
+                if(r=="0"){
+				alert("D");
+         
+                }else{
+                
+					localStorage.setItem("myuser",email);
+                    location.reload();
+					a=response[0]['user'];
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	
+ 
+ });
+ 
+ 
+//Registration
+  $( "#createacc" ).click(function() {
+	
+	 var name=$("#signup-username").val();
+	 var remail=$("#signup-email").val();
+	 var pw2=$("#signup-password").val();
+	
+	 
+	 
+	 if (name == "" ||remail == "" || pw2 =="" ){
+			alert("Please fill all blank");
+	 }else {
+		//alert("Login sucessful");
+		//alert(name+"\n"+remail +"\n"+ pw2);
+		
+	 }
+	 
+	 if(name=="" || remail=="" || pw2==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"user":name,"email":remail,"password":pw2};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Registration", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+            //alert(JSON.stringify(response));
+           // alert(response.result);
+
+                if(response.result=="success"){
+                   // alert("success");
+					//alert(remail);
+					localStorage.setItem("myuser",remail);
+                    location.reload();
+					a=response[0]['user'];
+	
+                }else{
+					alert("not success");
+					location.reload();
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	 
+ 
+ });
+ 
+ 
+
+});
+</script>
+    </head>
+  <body id="page-top">
+	<header class="cd-main-header">
+		<div class="cd-main-header__logo"><a href="/index"><img src="img/logo001.png" alt="Logo" border="0"></a></div>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 cd-main-nav js-main-nav" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="#page-top">Battery Everywhere</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto my-2 my-lg-0 cd-main-nav__list js-signin-modal-trigger">
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/index">About</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/product">Product</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/cart" id="fav"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/member" id="icon"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+						<li id="signin"><a class="cd-main-nav__item cd-main-nav__item--signin" href="#0" data-signin="login" >Sign in</a></li>
+						<li id="signup"><a class="cd-main-nav__item cd-main-nav__item--signup" href="#0" data-signin="signup" >Sign up</a></li>
+						<li id="signout"><a class="cd-main-nav__item cd-main-nav__item--signin" href="#0" data-signin="login" >Sign out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		</header>
+		<!--End Navigation-->
+		
+          
+		<div class="container">
+
+		<div class="row">
+		
+		  <div class="col-lg-3">
+			<img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/img/icon.png" alt="" /></span>
+			
+			<h2 id="displayuser"></h2>
+			<div class="list-group">
+			  <a href="/member" class="list-group-item">My Account</a>
+			  <a href="#" class="list-group-item">Change Password</a>
+			  <a href="#" class="list-group-item">Order History</a>
+			  <a href="#" class="list-group-item">Address Book</a>
+			</div>
+
+		  </div>
+		 
+		  
+		 <!-- form -->
+		  
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Change Password</h4>
+          <form>
+			  <div class="form-group">
+				<label for="exampleInputEmail1">New Password</label>
+				<input type="password" class="form-control" id="pw1" aria-describedby="emailHelp" placeholder="New Password">
+			  </div>
+			  <div class="form-group">
+				<label for="exampleInputPassword1">Comfirm Password</label>
+				<input type="password" class="form-control" id="pw2" placeholder="Comfirm Password">
+			  </div>
+				<input type="button" class="btn btn-primary btn-lg btn-block" id="updatepw" value="Update Password">
+          </form>
+				<hr class="mb-4">
+		  </div>
+		  </div>
+	
+        <!-- Footer-->
+        <footer class="bg-light py-5">
+            <div class="container"><div class="small text-center text-muted">Copyright © 2020 - Battery Everywhere</div></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/placeholders.min.js"></script>
+    </body>
+	<script>
+		function myFunction(name) {
+			return name;
+		}
+		var email = localStorage.getItem("myuser");
+		document.getElementById("displayuser").innerHTML = myFunction(email);
+		</script>
+		
+</html>

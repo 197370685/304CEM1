@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Creative - Start Bootstrap Theme</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
+        <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <!-- Third party plugin CSS-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/reset.css" rel="stylesheet" />
+		<link href="css/demo.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+		
+		<style>
+		
+		.container {
+		  max-width: 960px;
+		}
+
+		.border-top { border-top: 1px solid #e5e5e5; }
+		.border-bottom { border-bottom: 1px solid #e5e5e5; }
+		.border-top-gray { border-top-color: #adb5bd; }
+
+		.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+		.lh-condensed { line-height: 1.25; }
+		
+		
+		</style>
+		
+		
+		<script>
+$( document ).ready(function(){
+
+
+ 
+  //login
+ $( "#sendMessageButton" ).click(function() {
+	
+	 var email=$("#signin-email").val();
+	 var pass=$("#signin-password").val(); 
+	 
+	 if(email=="" || pass==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"email":email,"password":pass};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Login", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+          //  alert(JSON.stringify(response));
+         //   alert(response.result);
+        
+        //  response= {["user":"alex","link":"http://www.jpg"],["alex":"http://ddddd"]}
+        
+          var r=JSON.stringify(response);
+          
+				
+                if(r=="0"){
+				alert("Please signin again");
+         
+                }else{
+                
+					localStorage.setItem("myuser",email);
+                    location.reload();
+					a=response[0]['user'];
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	
+ 
+ });
+ 
+ 
+//Registration
+  $( "#createacc" ).click(function() {
+	
+	 var name=$("#signup-username").val();
+	 var remail=$("#signup-email").val();
+	 var pw2=$("#signup-password").val();
+	
+	 
+	 
+	 if (name == "" ||remail == "" || pw2 =="" ){
+			alert("Please fill all blank");
+	 }else {
+		//alert("Login sucessful");
+		//alert(name+"\n"+remail +"\n"+ pw2);
+		
+	 }
+	 
+	 if(name=="" || remail=="" || pw2==""){
+               alert("Please enter username");
+               return;
+            }
+            
+     
+            
+            var mydata={"user":name,"email":remail,"password":pw2};
+      
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/Registration", //Where form data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(response){
+            //alert(JSON.stringify(response));
+           // alert(response.result);
+
+                if(response.result=="success"){
+                   // alert("success");
+					//alert(remail);
+					localStorage.setItem("myuser",remail);
+                    location.reload();
+					a=response[0]['user'];
+	
+                }else{
+					alert("not success");
+					location.reload();
+                
+                }
+          
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+                alert(thrownError);
+            }
+            });
+	 
+ 
+ });
+ 
+ //showcart
+			var email = localStorage.getItem("myuser");
+			
+			var mydata={"email":email};
+			
+         $.ajax({
+            type: "POST", // Post / Get method
+            url: "http://127.0.0.1:9999/getinfo", //Where form. data is sent on submission  /// passdata= insert data    test2=retrieve data
+            dataType:'JSON', // Data type, HTML, json etc.
+            data:JSON.stringify(mydata), //Form variables
+            success:function(result){
+			
+
+                var a = JSON.stringify(result);
+				alert(a);
+				var b = JSON.parse(a);
+			
+				
+				
+				
+				for (i=0; i<b.length; i++){
+				
+				//alert(b[i]["img"]);
+				//alert(b[i]["item"]);
+				
+				$("#favlist11").append(
+				
+				
+				
+				);
+				}          
+            },
+			
+            error:function (xhr, ajaxOptions, thrownError){
+                alert("Please Login or Sigin up.");
+				window.location="/index";
+            }
+            });
+ 
+ 
+
+});
+</script>
+    </head>
+  <body id="page-top">
+	<header class="cd-main-header">
+		<div class="cd-main-header__logo"><a href="/index"><img src="img/logo001.png" alt="Logo" border="0"></a></div>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 cd-main-nav js-main-nav" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand js-scroll-trigger" href="#page-top">Battery Everywhere</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto my-2 my-lg-0 cd-main-nav__list js-signin-modal-trigger">
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/index">About</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#services">Services</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/product">Product</a></li>
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contact">Contact</a></li>
+						<li><a class="cd-main-nav__item cd-main-nav__item--signin" href="#0" data-signin="login">Sign out</a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>
+						<li class="nav-item"><a class="nav-link js-scroll-trigger" href="/member"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+		</header>
+		
+          
+		<div class="container">
+
+		<div class="row">
+		
+		  <div class="col-lg-3">
+			<img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="/img/icon.png" alt="" /></span>
+			
+			<h2>Clarence Taylor</h2>
+			<div class="list-group">
+			  <a href="#" class="list-group-item">My Account</a>
+			  <a href="/changepw" class="list-group-item">Change Password</a>
+			  <a href="#" class="list-group-item">Order History</a>
+			  <a href="#" class="list-group-item">Address Book</a>
+			</div>
+
+		  </div>
+		 
+		  
+		 <!-- form -->
+		  
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">My Account</h4>
+          <form class="needs-validation" novalidate>
+            
+
+            <div class="mb-3">
+              <label for="username">Username</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">@</span>
+                </div>
+                <input type="text" class="form-control" id="username" placeholder="Username" required>
+                <div class="invalid-feedback" style="width: 100%;">
+                  Your username is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email">Email </label>
+              <input type="email" class="form-control" id="email" placeholder="you@example.com">
+              <div class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </div>
+            </div>
+			
+			<div class="mb-3">
+              <label for="email">Password </label>
+              <input type="email" class="form-control" id="email" placeholder="you@example.com">
+              <div class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </div>
+            </div>
+
+           
+       
+            
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Update My Account</button>
+          </form>
+		  
+		   </div>
+		  </div>
+	
+        <!-- Footer-->
+        <footer class="bg-light py-5">
+            <div class="container"><div class="small text-center text-muted">Copyright © 2020 - Battery Everywhere</div></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+        <!-- Third party plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/placeholders.min.js"></script>
+    </body>
+</html>
